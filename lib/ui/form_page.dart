@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:form_event_app/controller/data_controller.dart';
+import 'package:form_event_app/controller/form_page_controller.dart';
+import 'package:get/get.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({super.key});
@@ -8,7 +12,14 @@ class FormPage extends StatefulWidget {
 }
 
 class _FormPageState extends State<FormPage> {
-  int _currentStep = 0;
+  final _formCpfKey = GlobalKey<FormState>();
+  final _formDados = GlobalKey<FormState>();
+  final nameController = TextEditingController().obs;
+  final phoneController = MaskedTextController(mask: '(00)00000-0000').obs;
+  final documentController = MaskedTextController(mask: '000.000.000-00').obs;
+  final _currentStep = 0.obs;
+  var controller = Get.put(DataController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,156 +29,218 @@ class _FormPageState extends State<FormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Stepper(
-                connectorColor: const WidgetStatePropertyAll(Colors.black),
-                currentStep: _currentStep,
-                onStepContinue: () {
-                  _currentStep > 0
-                      ? null
-                      : setState(() {
-                          _currentStep += 1;
-                        });
-                },
-                onStepCancel: () {
-                  _currentStep > 0
-                      ? setState(() {
-                          _currentStep -= 1;
-                        })
-                      : null;
-                },
-                controlsBuilder: (context, details) {
-                  return Row(
-                    children: [
-                      OutlinedButton(
-                        onPressed: details.onStepContinue,
-                        child: const Text("VALIDAR"),
-                      ),
-                      const SizedBox(width: 10),
-                      if (_currentStep != 0)
-                        OutlinedButton(
-                          onPressed: details.onStepCancel,
-                          child: const Text("VOLTAR"),
+              Obx(
+                () {
+                  return Stepper(
+                    connectorColor: const WidgetStatePropertyAll(Colors.black),
+                    currentStep: _currentStep.value,
+                    onStepContinue: onStepContinue,
+                    onStepCancel: onStepCancel,
+                    controlsBuilder: controlsBuilder,
+                    steps: [
+                      // STEP PARA VALIDAR O CPF
+                      Step(
+                        title: const Text("CPF"),
+                        content: Column(
+                          children: [
+                            const SizedBox(height: 5),
+                            Form(
+                              key: _formCpfKey,
+                              child: TextFormField(
+                                controller: documentController.value,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Campo vazio";
+                                  }
+                                  if (value.length < 14) {
+                                    return "Formato de CPF inválido";
+                                  }
+                                  return null;
+                                },
+                                keyboardType: TextInputType.number,
+                                maxLength: 14,
+                                buildCounter: (
+                                  context, {
+                                  required currentLength,
+                                  required isFocused,
+                                  required maxLength,
+                                }) {
+                                  return null;
+                                },
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.credit_card),
+                                  labelText: "Número do CPF",
+                                ),
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+                          ],
                         ),
+                      ),
+                      // STEP PARA ADICIONAR NOME E TELEFONE
+                      Step(
+                        title: const Text("Dados"),
+                        content: Form(
+                          key: _formDados,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 5),
+                              TextFormField(
+                                controller: nameController.value,
+                                validator: (value) {
+                                  return null;
+                                },
+                                textCapitalization:
+                                    TextCapitalization.characters,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.person),
+                                  labelText: "Nome completo",
+                                ),
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                              ),
+                              const SizedBox(height: 15),
+                              TextFormField(
+                                controller: phoneController.value,
+                                validator: (value) {
+                                  if (value != null && value.length < 8) {
+                                    return "Insira um telefone válido";
+                                  }
+                                  return null;
+                                },
+                                maxLength: 14,
+                                buildCounter: (
+                                  context, {
+                                  required currentLength,
+                                  required isFocused,
+                                  required maxLength,
+                                }) {
+                                  return null;
+                                },
+                                keyboardType: TextInputType.phone,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  prefixIcon: Icon(Icons.phone),
+                                  labelText: "Telefone",
+                                  hintText: "(00)00000-0000",
+                                ),
+                                onTapOutside: (event) {
+                                  FocusScope.of(context).unfocus();
+                                },
+                              ),
+                              const SizedBox(height: 15),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
-                steps: [
-                  Step(
-                    title: const Text("CPF"),
-                    content: Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.credit_card),
-                            labelText: "Número do CPF",
-                          ),
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                        ),
-                        const SizedBox(height: 15),
-                      ],
-                    ),
-                  ),
-                  Step(
-                    title: const Text("Dados"),
-                    content: Column(
-                      children: [
-                        const SizedBox(height: 5),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.person),
-                            labelText: "Nome completo",
-                          ),
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                        ),
-                        const SizedBox(height: 15),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            prefixIcon: Icon(Icons.phone),
-                            labelText: "Telefone",
-                          ),
-                          onTapOutside: (event) {
-                            FocusScope.of(context).unfocus();
-                          },
-                        ),
-                        const SizedBox(height: 15),
-                      ],
-                    ),
-                  ),
-                ],
               ),
+
+              const SizedBox(height: 30),
+              // BOTÃO DE GARANTIR VAGA.
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: null,
-                  style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.all(18)),
-                  child: const Text(
-                    "GARANTIR VAGA",
-                  ),
-                ),
+                child: Obx(() {
+                  var nameField = nameController.value.value.text;
+                  var phoneField = phoneController.value.value.text;
+                  return FilledButton(
+                    onPressed: nameField.isEmpty || phoneField.isEmpty
+                        ? null
+                        : () {
+                            if (_formDados.currentState!.validate()) {
+                              Get.snackbar(
+                                "Sucesso!",
+                                phoneController.value.text
+                                    .replaceAll(RegExp(r'[^0-9]'), ''),
+                                backgroundColor: Colors.lightGreenAccent,
+                              );
+                              resetInputs();
+                            }
+                          },
+                    style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.all(18)),
+                    child: const Text(
+                      "GARANTIR VAGA",
+                    ),
+                  );
+                }),
               )
-              // Form(
-              //   child: Column(
-              //     children: [
-              //       TextField(
-              //         decoration: const InputDecoration(
-              //           border: OutlineInputBorder(),
-              //           prefixIcon: Icon(Icons.credit_card),
-              //           labelText: "Número do CPF",
-              //         ),
-              //         onTapOutside: (event) {
-              //           FocusScope.of(context).unfocus();
-              //         },
-              //       ),
-              //       const SizedBox(height: 25),
-              //       TextField(
-              //         decoration: const InputDecoration(
-              //           border: OutlineInputBorder(),
-              //           prefixIcon: Icon(Icons.person),
-              //           labelText: "Nome completo",
-              //         ),
-              //         onTapOutside: (event) {
-              //           FocusScope.of(context).unfocus();
-              //         },
-              //       ),
-              //       const SizedBox(height: 25),
-              //       TextField(
-              //         decoration: const InputDecoration(
-              //           border: OutlineInputBorder(),
-              //           prefixIcon: Icon(Icons.phone),
-              //           labelText: "Telefone",
-              //         ),
-              //         onTapOutside: (event) {
-              //           FocusScope.of(context).unfocus();
-              //         },
-              //       ),
-              //       const SizedBox(height: 25),
-              //       SizedBox(
-              //         width: double.infinity,
-              //         child: OutlinedButton(
-              //           onPressed: () {},
-              //           style: OutlinedButton.styleFrom(
-              //               padding: const EdgeInsets.all(18)),
-              //           child: const Text(
-              //             "GARANTIR VAGA",
-              //           ),
-              //         ),
-              //       )
-              //     ],
-              //   ),
-              // )
             ],
           ),
         ),
       ),
     );
+  }
+
+  void resetInputs() {
+    _currentStep(0);
+    documentController.value.text = "";
+    nameController.value.text = "";
+    phoneController.value.text = "";
+  }
+
+  Widget controlsBuilder(BuildContext context, ControlsDetails details) {
+    return Row(
+      children: [
+        if (_currentStep.value != 1)
+          Expanded(
+            flex: 1,
+            child: FilledButton(
+              onPressed: details.onStepContinue,
+              child: Obx(
+                () {
+                  if (controller.isLoading.value) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  }
+                  return const Text("VALIDAR");
+                },
+              ),
+            ),
+          ),
+        const SizedBox(width: 10),
+        if (_currentStep.value != 0)
+          Expanded(
+            child: OutlinedButton(
+              onPressed: details.onStepCancel,
+              child: const Text("VOLTAR"),
+            ),
+          ),
+      ],
+    );
+  }
+
+  void onStepContinue() async {
+    var document =
+        documentController.value.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (_currentStep.value == 0 && _formCpfKey.currentState!.validate()) {
+      if (await controller.validateDocument(document)) {
+        _currentStep.value++;
+      }
+    }
+  }
+
+  void onStepCancel() {
+    if (_currentStep.value > 0) {
+      setState(() {
+        _currentStep.value -= 1;
+      });
+    }
   }
 }
