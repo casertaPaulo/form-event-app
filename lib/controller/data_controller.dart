@@ -5,11 +5,11 @@ import 'package:form_event_app/controller/database_controller.dart';
 import 'package:form_event_app/provider/data_provider.dart';
 import 'package:get/get.dart';
 
-class DataController extends GetxController {
-  final dataProvider = DataProvider();
-  final databaseController = Get.find<DatabaseController>();
+class DataController extends GetxController with WidgetsBindingObserver {
   var isLoading = false.obs;
   var isValid = false.obs;
+  final dataProvider = DataProvider();
+  final databaseController = Get.find<DatabaseController>();
 
   Future<bool> documentIsValid(String doc) async {
     final response = await dataProvider.fetch(doc);
@@ -49,8 +49,8 @@ class DataController extends GetxController {
 
   Future<bool> validateDocument(String doc) async {
     isLoading(true);
-    if (await documentIsValid(doc) ||
-        !await databaseController.documentAlreadyExists(doc)) {
+    if (await documentIsValid(doc) == false ||
+        await databaseController.documentAlreadyExists(doc) == true) {
       isLoading(false);
       return false;
     }

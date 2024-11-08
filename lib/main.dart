@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      theme: theme.dark(),
       home: const FormPage(),
     );
   }
