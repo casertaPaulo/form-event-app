@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:form_event_app/controller/data_controller.dart';
-import 'package:form_event_app/controller/form_page_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
@@ -15,7 +14,7 @@ class _FormPageState extends State<FormPage> {
   final _formCpfKey = GlobalKey<FormState>();
   final _formDados = GlobalKey<FormState>();
   final nameController = TextEditingController().obs;
-  final phoneController = MaskedTextController(mask: '(00)00000-0000').obs;
+  final phoneController = MaskedTextController(mask: '(00) 00000-0000').obs;
   final documentController = MaskedTextController(mask: '000.000.000-00').obs;
   final _currentStep = 0.obs;
   var controller = Get.put(DataController());
@@ -32,7 +31,8 @@ class _FormPageState extends State<FormPage> {
               Obx(
                 () {
                   return Stepper(
-                    connectorColor: const WidgetStatePropertyAll(Colors.black),
+                    connectorColor: WidgetStatePropertyAll(
+                        Theme.of(context).colorScheme.primary),
                     currentStep: _currentStep.value,
                     onStepContinue: onStepContinue,
                     onStepCancel: onStepCancel,
@@ -40,6 +40,18 @@ class _FormPageState extends State<FormPage> {
                     steps: [
                       // STEP PARA VALIDAR O CPF
                       Step(
+                        state: _currentStep.value > 0
+                            ? StepState.complete
+                            : StepState.indexed,
+                        stepStyle: StepStyle(
+                          color:
+                              _currentStep.value > 0 ? Colors.green[300] : null,
+                          indexStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.surface,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 15,
+                          ),
+                        ),
                         title: const Text("CPF"),
                         content: Column(
                           children: [
@@ -83,6 +95,13 @@ class _FormPageState extends State<FormPage> {
                       ),
                       // STEP PARA ADICIONAR NOME E TELEFONE
                       Step(
+                        stepStyle: StepStyle(
+                          indexStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.surface,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 15,
+                          ),
+                        ),
                         title: const Text("Dados"),
                         content: Form(
                           key: _formDados,
@@ -146,32 +165,35 @@ class _FormPageState extends State<FormPage> {
 
               const SizedBox(height: 30),
               // BOTÃO DE GARANTIR VAGA.
-              SizedBox(
-                width: double.infinity,
-                child: Obx(() {
-                  var nameField = nameController.value.value.text;
-                  var phoneField = phoneController.value.value.text;
-                  return FilledButton(
-                    onPressed: nameField.isEmpty || phoneField.isEmpty
-                        ? null
-                        : () {
-                            if (_formDados.currentState!.validate()) {
-                              Get.snackbar(
-                                "Sucesso!",
-                                phoneController.value.text
-                                    .replaceAll(RegExp(r'[^0-9]'), ''),
-                                backgroundColor: Colors.lightGreenAccent,
-                              );
-                              resetInputs();
-                            }
-                          },
-                    style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.all(18)),
-                    child: const Text(
-                      "GARANTIR VAGA",
-                    ),
-                  );
-                }),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Obx(() {
+                    var nameField = nameController.value.value.text;
+                    var phoneField = phoneController.value.value.text;
+                    return FilledButton(
+                      onPressed: nameField.isEmpty || phoneField.isEmpty
+                          ? null
+                          : () {
+                              if (_formDados.currentState!.validate()) {
+                                Get.snackbar(
+                                  "Sucesso!",
+                                  phoneController.value.text
+                                      .replaceAll(RegExp(r'[^0-9]'), ''),
+                                  backgroundColor: Colors.lightGreenAccent,
+                                );
+                                resetInputs();
+                              }
+                            },
+                      style: FilledButton.styleFrom(
+                          padding: const EdgeInsets.all(18)),
+                      child: const Text(
+                        "GARANTIR VAGA",
+                      ),
+                    );
+                  }),
+                ),
               )
             ],
           ),
