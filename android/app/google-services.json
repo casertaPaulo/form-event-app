@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1035260998061",
+    "project_id": "event-form-fb9eb",
+    "storage_bucket": "event-form-fb9eb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035260998061:android:da0d4ae568a20d7a0b7124",
+        "android_client_info": {
+          "package_name": "com.teste.form_event_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaCVigzwVRuDy6pU6lrfex6gyAY8Tg9BM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

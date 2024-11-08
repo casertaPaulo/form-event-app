@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:form_event_app/controller/data_controller.dart';
+import 'package:form_event_app/controller/database_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
@@ -18,6 +19,7 @@ class _FormPageState extends State<FormPage> {
   final documentController = MaskedTextController(mask: '000.000.000-00').obs;
   final _currentStep = 0.obs;
   var controller = Get.put(DataController());
+  var databaseController = Get.put(DatabaseController());
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,41 @@ class _FormPageState extends State<FormPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Obx(
+                () {
+                  return Align(
+                    alignment: Alignment.topRight,
+                    child: SizedBox(
+                      height: 100,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Vagas",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              Text(
+                                databaseController.remain.toString(),
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+
               Obx(
                 () {
                   return Stepper(
@@ -133,7 +170,7 @@ class _FormPageState extends State<FormPage> {
                                   }
                                   return null;
                                 },
-                                maxLength: 14,
+                                maxLength: 15,
                                 buildCounter: (
                                   context, {
                                   required currentLength,
@@ -177,6 +214,7 @@ class _FormPageState extends State<FormPage> {
                           ? null
                           : () {
                               if (_formDados.currentState!.validate()) {
+                                databaseController.inscription();
                                 Get.snackbar(
                                   "Sucesso!",
                                   phoneController.value.text
