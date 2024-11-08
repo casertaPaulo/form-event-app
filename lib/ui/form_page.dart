@@ -170,7 +170,7 @@ class _FormPageState extends State<FormPage> {
                                   }
                                   return null;
                                 },
-                                maxLength: 15,
+                                maxLength: 14,
                                 buildCounter: (
                                   context, {
                                   required currentLength,
@@ -274,7 +274,6 @@ class _FormPageState extends State<FormPage> {
               ),
             ),
           ),
-        const SizedBox(width: 10),
         if (_currentStep.value != 0)
           Expanded(
             child: OutlinedButton(

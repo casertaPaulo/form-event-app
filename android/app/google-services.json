@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1035260998061",
+    "firebase_url": "https://event-form-fb9eb-default-rtdb.firebaseio.com",
     "project_id": "event-form-fb9eb",
     "storage_bucket": "event-form-fb9eb.firebasestorage.app"
   },

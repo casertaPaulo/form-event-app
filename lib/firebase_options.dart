@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1035260998061',
     projectId: 'event-form-fb9eb',
     authDomain: 'event-form-fb9eb.firebaseapp.com',
+    databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
     storageBucket: 'event-form-fb9eb.firebasestorage.app',
   );
 
@@ -60,6 +61,7 @@ class DefaultFirebaseOptions {
     appId: '1:1035260998061:android:da0d4ae568a20d7a0b7124',
     messagingSenderId: '1035260998061',
     projectId: 'event-form-fb9eb',
+    databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
     storageBucket: 'event-form-fb9eb.firebasestorage.app',
   );
 
@@ -68,7 +70,9 @@ class DefaultFirebaseOptions {
     appId: '1:1035260998061:ios:f327909011fd04bc0b7124',
     messagingSenderId: '1035260998061',
     projectId: 'event-form-fb9eb',
+    databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
     storageBucket: 'event-form-fb9eb.firebasestorage.app',
     iosBundleId: 'com.teste.formEventApp',
   );
+
 }
