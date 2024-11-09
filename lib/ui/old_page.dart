@@ -7,14 +7,14 @@ import 'package:form_event_app/util/util.dart';
 import 'package:get/get.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
-class FormPage extends StatefulWidget {
-  const FormPage({super.key});
+class OldPage extends StatefulWidget {
+  const OldPage({super.key});
 
   @override
-  State<FormPage> createState() => _FormPageState();
+  State<OldPage> createState() => _OldPageState();
 }
 
-class _FormPageState extends State<FormPage> with WidgetsBindingObserver {
+class _OldPageState extends State<OldPage> with WidgetsBindingObserver {
   final _formCpfKey = GlobalKey<FormState>();
   final _formDados = GlobalKey<FormState>();
   final nameController = TextEditingController().obs;
@@ -132,141 +132,6 @@ class _FormPageState extends State<FormPage> with WidgetsBindingObserver {
                   ),
                 ),
               ),
-              Obx(() {
-                return Expanded(
-                  child: Stepper(
-                    controller: ScrollController(),
-                    connectorColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.primary),
-                    currentStep: _currentStep.value,
-                    onStepContinue: onStepContinue,
-                    onStepCancel: onStepCancel,
-                    controlsBuilder: controlsBuilder,
-                    steps: [
-                      // STEP PARA VALIDAR O CPF
-                      Step(
-                        state: _currentStep.value > 0
-                            ? StepState.complete
-                            : StepState.indexed,
-                        stepStyle: StepStyle(
-                          color:
-                              _currentStep.value > 0 ? Colors.green[300] : null,
-                          indexStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.surface,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 15,
-                          ),
-                        ),
-                        title: const Text("CPF"),
-                        content: Column(
-                          children: [
-                            const SizedBox(height: 5),
-                            Form(
-                              key: _formCpfKey,
-                              child: TextFormField(
-                                controller: documentController.value,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Campo vazio";
-                                  }
-                                  if (value.length < 14) {
-                                    return "Formato de CPF inválido";
-                                  }
-                                  return null;
-                                },
-                                keyboardType: TextInputType.number,
-                                maxLength: 14,
-                                buildCounter: (
-                                  context, {
-                                  required currentLength,
-                                  required isFocused,
-                                  required maxLength,
-                                }) {
-                                  return null;
-                                },
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.credit_card),
-                                  labelText: "Número do CPF",
-                                ),
-                                onTapOutside: (event) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 15),
-                          ],
-                        ),
-                      ),
-                      // STEP PARA ADICIONAR NOME E TELEFONE
-                      Step(
-                        stepStyle: StepStyle(
-                          indexStyle: TextStyle(
-                            color: Theme.of(context).colorScheme.surface,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 15,
-                          ),
-                        ),
-                        title: const Text("Dados"),
-                        content: Form(
-                          key: _formDados,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 5),
-                              TextFormField(
-                                controller: nameController.value,
-                                validator: (value) {
-                                  return null;
-                                },
-                                textCapitalization:
-                                    TextCapitalization.characters,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.person),
-                                  labelText: "Nome completo",
-                                ),
-                                onTapOutside: (event) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              ),
-                              const SizedBox(height: 15),
-                              TextFormField(
-                                controller: phoneController.value,
-                                validator: (value) {
-                                  if (value != null && value.length < 8) {
-                                    return "Insira um telefone válido";
-                                  }
-                                  return null;
-                                },
-                                maxLength: 15,
-                                buildCounter: (
-                                  context, {
-                                  required currentLength,
-                                  required isFocused,
-                                  required maxLength,
-                                }) {
-                                  return null;
-                                },
-                                keyboardType: TextInputType.phone,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  prefixIcon: Icon(Icons.phone),
-                                  labelText: "Telefone",
-                                  hintText: "(00)00000-0000",
-                                ),
-                                onTapOutside: (event) {
-                                  FocusScope.of(context).unfocus();
-                                },
-                              ),
-                              const SizedBox(height: 15),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: SizedBox(
@@ -302,7 +167,7 @@ class _FormPageState extends State<FormPage> with WidgetsBindingObserver {
       String name = nameController.value.value.text;
       int phone = int.parse(_cleanText(phoneController.value.value.text));
 
-      databaseController.doInscription(document, name, phone);
+      databaseController.doInscription(document, name, phone, "tese");
       _resetInputs();
     }
   }

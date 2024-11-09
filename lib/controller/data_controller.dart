@@ -9,7 +9,7 @@ class DataController extends GetxController with WidgetsBindingObserver {
   var isLoading = false.obs;
   var isValid = false.obs;
   final dataProvider = DataProvider();
-  final databaseController = Get.find<DatabaseController>();
+  var databaseController = Get.find<DatabaseController>();
 
   Future<bool> documentIsValid(String doc) async {
     final response = await dataProvider.fetch(doc);

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
 class FadeInUp extends StatefulWidget {
-  late Widget child;
-  late int duration;
-  FadeInUp({super.key, required this.child, required this.duration});
+  final Widget child;
+  final int duration;
+  const FadeInUp({super.key, required this.child, required this.duration});
 
   @override
   // ignore: library_private_types_in_public_api

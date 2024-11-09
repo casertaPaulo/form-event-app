@@ -37,10 +37,11 @@ class DatabaseController extends GetxController {
 
   // Método que realiza a inscrição do evento, criando o document do user
   // e decrementa a quantidade de vagas disponíveis
-  doInscription(String cpf, String name, int phone) async {
+  doInscription(String cpf, String name, int phone, String item) async {
     await _firestoreDatabaseRef.doc(cpf).set({
       'nome': name,
       'telefone': phone,
+      'item': item,
     });
     await _realtimeDatabaseRef.set(remain.value - 1);
   }
